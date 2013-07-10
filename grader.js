@@ -46,7 +46,7 @@ var assertFileExists = function(infile) {
 
 
 var restlerURL = function(url) {
-    console.log(restler.request(url));
+    console.log(rest.request(url));
     return restler.request(url);
 }
 
