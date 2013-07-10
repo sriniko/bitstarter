@@ -21,11 +21,19 @@ References:
    - https://developer.mozilla.org/en-US/docs/JSON#JSON_in_Firefox_2
 */
 
+var rest = require('restler');
 var fs = require('fs');
 var program = require('commander');
 var cheerio = require('cheerio');
 var HTMLFILE_DEFAULT = "index.html";
 var CHECKSFILE_DEFAULT = "checks.json";
+var URL_DEFAULT = "http://murmuring-shelf-4848.herokuapp.com/";
+
+var assertValidURL = function(url) {
+    var inputurl = url.toString();
+    return inputurl;
+}
+
 
 var assertFileExists = function(infile) {
     var instr = infile.toString();
@@ -35,6 +43,13 @@ var assertFileExists = function(infile) {
     }
     return instr;
 };
+
+
+var restlerURL = function(url) {
+    console.log(restler.request(url));
+    return restler.request(url);
+}
+
 
 var cheerioHtmlFile = function(htmlfile) {
     return cheerio.load(fs.readFileSync(htmlfile));
@@ -61,15 +76,19 @@ var clone = function(fn) {
     return fn.bind({});
 };
 
+
 if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
-        .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
+       .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
+       .option('-u, --url <url>', 'URL that needs to be checked', clone(assertValidURL), URL_DEFAULT)
         .parse(process.argv);
     var checkJson = checkHtmlFile(program.file, program.checks);
+    
+console.log (rest.get(program.url));
+
     var outJson = JSON.stringify(checkJson, null, 4);
     console.log(outJson);
 } else {
     exports.checkHtmlFile = checkHtmlFile;
 }
-
