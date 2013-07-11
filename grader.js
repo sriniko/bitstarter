@@ -44,11 +44,34 @@ var assertFileExists = function(infile) {
     return instr;
 };
 
+//rest.get("http://www.cnn.com").on('complete', function(data) {
+ // console.log(data);
 
-var restlerURL = function(url) {
+//});
+
+var checkUrlFile = function(urlfile, checksfile) {
+     rest.get(urlfile).on('complete', function(result) {
+        //fs.writeFile("./urlfile", result.trim(), function err() {});
+        //$ = cheerioHtmlFile("./urlfile");
+        $ = cheerio.load(result);
+        var checks = loadChecks(checksfile).sort();
+        var out = {};
+        for(var ii in checks) {
+           var present = $(checks[ii]).length > 0;
+           out[checks[ii]] = present;
+        }
+        var outJson = JSON.stringify(out, null, 4);
+        console.log(outJson);
+        return;
+     });
+};
+
+
+
+/*var restlerURL = function(url) {
     console.log(rest.request(url));
-    return restler.request(url);
-}
+    return rest.request(url);
+}*/
 
 
 var cheerioHtmlFile = function(htmlfile) {
@@ -83,12 +106,27 @@ if(require.main == module) {
        .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
        .option('-u, --url <url>', 'URL that needs to be checked', clone(assertValidURL), URL_DEFAULT)
         .parse(process.argv);
-    var checkJson = checkHtmlFile(program.file, program.checks);
-    
-console.log (rest.get(program.url));
-
-    var outJson = JSON.stringify(checkJson, null, 4);
-    console.log(outJson);
+    var checkJson = null;
+   if (program.url)
+    {
+        checkJson = checkUrlFile(program.url, program.checks);
+    }
+    else if (program.file)
+    {
+        checkJson = checkHtmlFile(program.file, program.checks);
+        var outJson = JSON.stringify(checkJson, null, 4);
+        console.log(outJson);
+    }
 } else {
     exports.checkHtmlFile = checkHtmlFile;
 }
+
+// checkHtmlFile(program.file, program.checks);
+    
+//console.log (rest.get(program.url));
+
+  //  var outJson = JSON.stringify(checkJson, null, 4);
+   // console.log(outJson);
+//} else {
+  //  exports.checkHtmlFile = checkHtmlFile;
+//}
