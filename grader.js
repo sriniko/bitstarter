@@ -44,10 +44,6 @@ var assertFileExists = function(infile) {
     return instr;
 };
 
-//rest.get("http://www.cnn.com").on('complete', function(data) {
- // console.log(data);
-
-//});
 
 var checkUrlFile = function(urlfile, checksfile) {
      rest.get(urlfile).on('complete', function(result) {
@@ -66,12 +62,6 @@ var checkUrlFile = function(urlfile, checksfile) {
      });
 };
 
-
-
-/*var restlerURL = function(url) {
-    console.log(rest.request(url));
-    return rest.request(url);
-}*/
 
 
 var cheerioHtmlFile = function(htmlfile) {
@@ -104,7 +94,7 @@ if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
        .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
-       .option('-u, --url <url>', 'URL that needs to be checked', clone(assertValidURL), URL_DEFAULT)
+       .option('-u, --url <url>', 'URL that needs to be checked', clone(assertValidURL), false)
         .parse(process.argv);
     var checkJson = null;
    if (program.url)
@@ -121,12 +111,4 @@ if(require.main == module) {
     exports.checkHtmlFile = checkHtmlFile;
 }
 
-// checkHtmlFile(program.file, program.checks);
-    
-//console.log (rest.get(program.url));
 
-  //  var outJson = JSON.stringify(checkJson, null, 4);
-   // console.log(outJson);
-//} else {
-  //  exports.checkHtmlFile = checkHtmlFile;
-//}
